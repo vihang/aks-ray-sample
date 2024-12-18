@@ -1,57 +1,27 @@
-# Project Name
+# aks-ray-sample
 
-(short, 1-3 sentenced, description of the project)
-
-## Features
-
-This project framework provides the following features:
-
-* Feature 1
-* Feature 2
-* ...
+This sample shows how to deploy a Ray cluster on an Azure Kubernetes Service (AKS) cluster using the KubeRay operator. The sample also shows how to run a simple Ray application on the cluster.
 
 ## Getting Started
 
+Clone the repository to your local machine. Then make sure you have all the prerequisites installed.
+
 ### Prerequisites
 
-(ideally very short, if any)
-
-- OS
-- Library version
-- ...
-
-### Installation
-
-(ideally very short)
-
-- npm install [package name]
-- mvn install
-- ...
+1. An Azure subscription. If you don't have an Azure subscription, you can create a free account [here](https://azure.microsoft.com/free/).
+1. The Azure CLI installed on your local machine. You can install the Azure CLI by following the instructions [here](https://docs.microsoft.com/cli/azure/install-azure-cli).
+1. The [Azure Kubernetes Service Preview extension](https://learn.microsoft.com/azure/aks/draft#install-the-aks-preview-azure-cli-extension) must be installed.
+1. [Helm](https://helm.sh/docs/intro/install/) must be installed.
+1. [Terraform client tools](https://developer.hashicorp.com/terraform/install) or [OpenTofu](https://opentofu.org/) must be installed. This guide makes use of Terrafrom, however the modules used should be compatible with OpenTofu.
 
 ### Quickstart
-(Add steps to get up and running quickly)
 
-1. git clone [repository clone url]
-2. cd [repository name]
-3. ...
-
-
-## Demo
-
-A demo app is included to show how to use the project.
-
-To run the demo, follow these steps:
-
-(Add steps to start up the demo)
-
-1.
-2.
-3.
+1. Clone the repository [https://github.com/Azure-Samples/aks-ray-sample](https://github.com/Azure-Samples/aks-ray-sample) on to your local machine.
+2. Navigate to the directory you cloned the repository to.
+3. Enable execute permissions on the `deploy.sh` script by running `chmod +x deploy.sh`.
+4. Run the `deploy.sh` script by running `./deploy.sh`. This script will deploy the AKS cluster, install the KubeRay operator then submit a training job to run on the AKS cluster.
 
 ## Resources
 
-(Any additional resources or related projects)
-
-- Link to supporting information
-- Link to similar sample
-- ...
+- [Ray on Kubernetes](https://docs.ray.io/en/latest/cluster/kubernetes/index.html)
+- [KubeRay project](https://github.com/ray-project/kuberay)
