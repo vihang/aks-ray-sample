@@ -52,12 +52,19 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 }
 
 resource "null_resource" "wait_for_aks" {
-    depends_on = [azurerm_kubernetes_cluster.k8s]
+  depends_on = [azurerm_kubernetes_cluster.k8s]
 
   provisioner "local-exec" {
     command = <<EOT
-      while [ "$(az aks show --resource-group ${azurerm_resource_group.rg.name} --name ${azurerm_kubernetes_cluster.aks_cluster.name} --query "provisioningState" -o tsv)" != "Succeeded" ]; do
-        echo "Waiting for AKS cluster to be fully provisioned..."
+      max_retries=10
+      retries=0
+      while [ "$(az aks show --resource-group ${azurerm_resource_group.rg.name} --name ${azurerm_kubernetes_cluster.k8s.name} --query "provisioningState" -o tsv)" != "Succeeded" ]; do
+        if [ $retries -ge $max_retries ]; then
+          echo "Max retries exceeded. Exiting..."
+          exit 1
+        fi
+        echo "Waiting for AKS cluster to be fully provisioned... (Attempt: $((retries+1)))"
+        retries=$((retries+1))
         sleep 30
       done
     EOT
