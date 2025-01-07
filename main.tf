@@ -93,4 +93,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "workload" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s.id
   vm_size               = var.ray_node_pool_vm_size
   node_count            = 4
+
+  depends_on = [azapi_update_resource.k8s-default-node-pool-systempool-taint]
 }
