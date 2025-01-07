@@ -51,6 +51,26 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   }
 }
 
+resource "null_resource" "wait_for_aks" {
+  depends_on = [azurerm_kubernetes_cluster.k8s]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      max_retries=10
+      retries=0
+      while [ "$(az aks show --resource-group ${azurerm_resource_group.rg.name} --name ${azurerm_kubernetes_cluster.k8s.name} --query "provisioningState" -o tsv)" != "Succeeded" ]; do
+        if [ $retries -ge $max_retries ]; then
+          echo "Max retries exceeded. Exiting..."
+          exit 1
+        fi
+        echo "Waiting for AKS cluster to be fully provisioned... (Attempt: $((retries+1)))"
+        retries=$((retries+1))
+        sleep 30
+      done
+    EOT
+  }
+}
+
 resource "azapi_update_resource" "k8s-default-node-pool-systempool-taint" {
   type        = "Microsoft.ContainerService/managedClusters@2024-09-02-preview"
   resource_id = azurerm_kubernetes_cluster.k8s.id
@@ -65,7 +85,7 @@ resource "azapi_update_resource" "k8s-default-node-pool-systempool-taint" {
     }
   })
 
-  depends_on = [azurerm_kubernetes_cluster.k8s]
+  depends_on = [null_resource.wait_for_aks]
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "workload" {
@@ -73,4 +93,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "workload" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s.id
   vm_size               = var.ray_node_pool_vm_size
   node_count            = 4
+
+  depends_on = [azapi_update_resource.k8s-default-node-pool-systempool-taint]
 }

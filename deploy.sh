@@ -118,7 +118,7 @@ spec:
 EOF
 
 # Now find the public IP address of the ingress controller
-lb_public_ip=$(kc get svc -n app-routing-system -o jsonpath='{.items[?(@.metadata.name == "nginx")].status.loadBalancer.ingress[0].ip}')
+lb_public_ip=$(kubectl get svc -n app-routing-system -o jsonpath='{.items[?(@.metadata.name == "nginx")].status.loadBalancer.ingress[0].ip}')
 
 echo "KubeRay Dashboard URL: http://$lb_public_ip/"
 
