@@ -10,7 +10,7 @@ variable "resource_group_owner" {
 
 variable "resource_group_location" {
   type        = string
-  default     = "westus3"
+  default     = "southeastasia"
   description = "Location of the resource group."
 }
 
